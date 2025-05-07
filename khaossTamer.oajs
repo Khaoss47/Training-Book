@@ -1,0 +1,202 @@
+//_______$__________$
+//______$$_____$___$$
+//_______$$_$___$_$$
+//______$$$__$____$$$
+//___$___$$_$$$__$$$$__$
+//__$$___$$$$$__$$$$___$$
+//___$$_$$$$$___$$$$$_$$
+//___$$$$$$$$$_$$$$$$$$$
+//__$$$*****$$$$$*****$$$$$
+//__$*_______*_*_______*$
+//__*____Full Metal Tamer_*
+//__*___By ~Khaoss~___*
+//__*____Version1.47___*
+//___*__________________*
+//____*_______________*
+//______*___________*
+//________*_______*
+//__________*___*
+//____________*
+
+
+//Train taming to at least 30 before starting and magery/eval to 50 (done in haven)
+//Name a runic atlas "Taming" and mark runes for : 
+//*Farm*Hind*Ice*Bear*Bull*Snow*Home 
+//Update Roaming Points under includes for the area you have marked for each mob
+//Grab a taming mastery (2 works fine), full mage book and mastery book.
+//100 lrc suit and 0 mage wep
+//Under masteryTame update this: (4007, 258) to coordinates inside your house, or location 
+//you will use the mastery at. (Mark this as your home rune)
+//Path the includes
+
+//#include C:/OA/Khaoss/khaossTamerFunctions.oajs
+//#include C:/OA/Khaoss/khaossTamer.oajs
+//#include C:/OA/Khaoss/khaossTamerIncludes.oajs
+
+Orion.WarMode(true);
+
+function autoFullTamer() {
+    
+Orion.Exec('autoHeal');
+    Orion.Wait(50);
+   
+
+    var lastLocation = '';
+
+    while (true) {
+        Orion.Wait(500);
+
+        var taming = Orion.SkillValue('Animal Taming');
+        var newLocation = '';
+
+        if (taming <= skillThresholds.haven)
+            newLocation = 'Haven';
+        else if (taming <= skillThresholds.farm)
+            newLocation = 'Farm';
+        else if (taming <= skillThresholds.hind)
+            newLocation = 'Hind';
+        else if (taming <= skillThresholds.ice)
+            newLocation = 'Ice';
+        else if (taming <= skillThresholds.bear)
+            newLocation = 'Bear';
+        else if (taming <= skillThresholds.snow)
+            newLocation = 'Snow';
+        else if (taming < skillThresholds.bull)
+            newLocation = 'Bull';
+        else if (taming < cap)
+            newLocation = 'Home';
+        else {
+            Orion.Say("Legendary Taming?! Way to be a baddie <3");
+            break; // Legendary reached
+        }
+
+        if (newLocation !== lastLocation) {
+            lastLocation = newLocation;
+            Orion.CharPrint(self,'2128',"Party at " + newLocation);
+            Watchers(newLocation);
+
+            var timeout = Orion.Now() + targetWaitTimeout;
+            while (Orion.WaitForTarget(0) && Orion.Now() < timeout) {
+                Orion.Wait(100);
+            }
+        }
+
+        Orion.Wait(waitAfterMove);
+
+        if (tameFunctionMap[newLocation]) {
+            tameFunctionMap[newLocation]();
+        }
+    }
+}
+
+var lastRoam = null;
+function randoMe(p1, p2, p3) {
+    var minX = Math.min(p1.x, p2.x, p3.x);
+    var maxX = Math.max(p1.x, p2.x, p3.x);
+    var minY = Math.min(p1.y, p2.y, p3.y);
+    var maxY = Math.max(p1.y, p2.y, p3.y);
+
+    // Starting point for tighter roaming
+    var base = lastRoam || {
+        x: Math.floor((p1.x + p2.x + p3.x) / 3),
+        y: Math.floor((p1.y + p2.y + p3.y) / 3)
+    };
+
+    // Localized roaming radius (adjust 5–15 for density)
+    var roamRadius = 15;
+
+    // Generate a small random step within radius
+    var newX = base.x + Orion.Random(-roamRadius, roamRadius);
+    var newY = base.y + Orion.Random(-roamRadius, roamRadius);
+
+    // Clamp to bounds
+    newX = Math.max(minX, Math.min(maxX, newX));
+    newY = Math.max(minY, Math.min(maxY, newY));
+
+    lastRoam = { x: newX, y: newY };
+    Orion.WalkTo(newX, newY);
+}
+
+function masteryTame() {
+    Orion.Wait(500);
+
+    while (!Player.Dead()) {
+        var tamingSkill = Orion.SkillValue('Animal Taming');
+
+        if (tamingSkill >= 900 && tamingSkill <= 1200) {
+            Orion.WalkTo(4007, 258);
+            Orion.Wait(500);
+
+            Orion.UseObject('self');
+            Orion.Wait(1100);
+
+            var pets = Orion.FindTypeEx('any', 'any', 'ground', 'nothuman');
+            var pet = null;
+
+            for (var i = 0; i < pets.length; i++) {
+                var currentPet = pets[i];
+
+                if (Orion.Contains(currentPet.Properties(), "\n" + "(bonded)")) {
+                    pet = currentPet;
+                    break;
+                }
+            }
+
+            if (pet) {
+                Orion.Follow(pet);
+                Orion.Wait(1000);
+                Orion.Cast('Combat Training');
+
+                if (Orion.WaitForTarget(2000)) {
+                    Orion.TargetObject(pet.Serial());
+                }
+
+                Orion.Wait(1000);
+            }
+        }
+
+        if (Player.Mana() <= 30) {
+            if (Orion.SkillValue('Meditation') > 40) {
+                while (!Orion.BuffExists('meditation')) {
+                    Orion.UseSkill('meditation');
+                    Orion.Wait(5000);
+                }
+            }
+
+            while (Player.Mana() < Player.MaxMana()) {
+                Orion.Wait(100);
+            }
+        }
+
+        Orion.Wait(250);
+    }
+}
+   
+function fireballAttack() {
+    var mob = Orion.FindObject('lasttarget');
+    attackPet(mob);
+}
+
+function lightningAttack() {
+    var mob = Orion.FindObject('lasttarget');
+    attackPet(mob);
+}
+    
+function autoHeal() {
+    var healthThreshold = Player.MaxHits() * 0.75;
+
+    while (true) {
+        if (Player.Hits() < healthThreshold) {
+            Orion.Cast('Heal', Player.Serial());
+            Orion.Wait(2000);
+        }
+
+        Orion.Wait(2000);
+    }
+}
+
+function Watchers(tamingLocation) {
+    if (!tamingLocation) return;
+Orion.Print('2128',"Onward to " + tamingLocation);
+    TamingAdventure(tamingLocation);
+}

@@ -1,0 +1,194 @@
+//#include C:/OA/Khaoss/khaossTamerFunctions.oajs
+//#include C:/OA/Khaoss/khaossTamer.oajs
+//#include C:/OA/Khaoss/khaossTamerFunctions.oajs
+//#include C:/OA/Khaoss/scriptBookVar.oajs
+//#include C:/OA/Khaoss/scriptBookFunctions.oajs
+
+function SaveGumpPosition(gumpId, gump) {
+    var playerSerial = Player.Serial();
+    Orion.Print(0x44, "Saving gump position: " + gump.X + ", " + gump.Y);
+    Orion.RegWrite(playerSerial + "/GumpX" + gumpId, gump.X);
+    Orion.RegWrite(playerSerial + "/GumpY" + gumpId, gump.Y);
+}
+
+function LoadGumpPosition(defaultX, defaultY, gumpId) {
+    var playerSerial = Player.Serial();
+    var X = Orion.RegRead(playerSerial + "/GumpX" + gumpId);
+    var Y = Orion.RegRead(playerSerial + "/GumpY" + gumpId);
+
+    if (X === undefined || isNaN(X)) X = defaultX;
+    if (Y === undefined || isNaN(Y)) Y = defaultY;
+
+    return { X: X, Y: Y };
+}
+// Script 1 -------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+function SetResource(){
+	Orion.Print(55, 'Set Resource Container!')
+	Orion.WaitForAddObject('ac_resource',25000);
+	Orion.Exec('SetFinished');
+	Orion.Wait(100)
+}
+function SetFinished(){
+	Orion.Print(55, 'Set Finished Container!')
+	Orion.WaitForAddObject('ac_finished',25000);
+	Orion.Wait(100)
+}
+// Script 2-------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+function AntiGM() {
+    // Discord
+    var bot = "Your Webhook Here"; // Webhook url
+    var charName = Player.Name();
+    var paramText = "username=" + charName + "&content=@everyone " + charName + " has a GM tapping them on the shoulder. ";
+
+    while (true) {
+        var startTime = Orion.Now();
+        var msg = Orion.WaitJournal("GM | Seer |Counselor ", startTime, 0);
+        Orion.Wait(1);
+        Orion.HttpPost(bot, paramText);
+        Orion.Terminate('all');
+    }
+}
+// Script 3-------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+function StayHidden() {
+    var Timer = Orion.Now();
+    while (!Player.Dead()) {
+        if (!Orion.BuffExists('Invisibility') && !Orion.BuffExists('Hiding') && Timer <= Orion.Now()) {
+            Orion.UseSkill('Hiding');
+            Timer = Orion.Now() + 11000;
+            Orion.Wait(200);
+        }
+        if (!Orion.BuffExists('Hiding') && !Orion.BuffExists('Invisibility') && Timer > Orion.Now()) {
+            Orion.WaitForTarget(2500);
+            Orion.Wait(1000);
+        }
+        Orion.Wait(2000);
+    }
+}
+// Script 4-------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+function GetFukiyaDart(){
+	Orion.UseObject('ac_resource')//Set your container serial
+    Orion.Wait(1250)
+	if (Orion.Count('0x2806', '0x0000', backpack) < 1){
+		if (Orion.Count('0x2806', '0x0000', '0x45B52F71') < 1){
+			Orion.Print('Not Enough Darts...')	
+			Orion.Terminate('all')		
+		}
+		Orion.Print('Grabbing darts...')
+		dart = Orion.FindType('0x2806', '0x0000','0x45B52F71')
+		Orion.MoveItem(dart, 1, backpack)
+		Orion.Wait(2250)
+		Orion.Exec('GetDP');
+	}
+}
+
+function GetDP(){
+	Orion.Wait(1500);
+    Orion.UseObject('ac_resource')//Set your container serial)
+    Orion.Wait(1250)
+		if (Orion.Count('0x0F0A', '0x0000', '0x45B52F71') < 1){
+			Orion.Print('Not Enough Poison...')	
+			Orion.Terminate('all')		
+		}
+		Orion.Print('Grabbing poisons...')
+		DP = Orion.FindType('0x0F0A', '0x0000','0x45B52F71')
+		Orion.MoveItem(DP, 1, backpack)
+		Orion.Wait(1250)
+		Orion.Exec('DPDart');
+}
+
+function DPDart(){
+	Orion.UseSkill('Poisoning');
+	if (Orion.WaitForTarget(1000))
+Orion.TargetType('0x0F0A', '0x0000');
+	Orion.Wait(100);
+	if (Orion.WaitForTarget(1000))
+Orion.TargetType('0x2806', '0xFFFF');
+	Orion.Wait(15050);
+	Orion.Exec('DropDart');
+  }
+  
+function DropDart(){
+	Orion.Print('Dropping darts...')
+	dart = Orion.FindType('0x2806', '0x0000',backpack);
+	Orion.MoveItem(dart, 1, 'ac_finished');
+	Orion.Exec('DropBottleDart');
+	Orion.Wait(1000);
+    }
+  
+function DropBottleDart(){
+ 	Orion.Wait(1500);
+	Orion.Print('Dropping bottle...')
+	empty = Orion.FindType('0x0F0E', '0x0000',backpack);
+	Orion.MoveItem(empty, 1, 'ac_finished');
+	Orion.Wait(1500);
+	Orion.Exec('GetFukiyaDart');
+	}
+	
+
+// Script 5-------------------------------------------------------------------------------------------------------------------------------------------------------------
+function PoisonStars(){
+	Orion.Exec('GetShuriken');
+	}
+
+function GetShuriken(){
+	Orion.UseObject('ac_resource')//Set your container serial
+    Orion.Wait(1250)
+	if (Orion.Count('0x27AC', '0x0000', backpack) < 1){
+		if (Orion.Count('0x27AC', '0x0000', 'ac_resource') < 1){
+			Orion.Print('Not Enough Stars...')	
+			Orion.Terminate('all')		
+		}
+		Orion.Print('Grabbing star...')
+		star = Orion.FindType('0x27AC', '0x0000','ac_resource')
+		Orion.MoveItem(star, 1, backpack)
+		Orion.Wait(2250)
+		Orion.Exec('GetDPStar');
+	}
+}
+
+function GetDPStar(){
+	Orion.Wait(1500);
+    Orion.UseObject('ac_resource')//Set your container serial)
+    Orion.Wait(1250)
+		if (Orion.Count('0x0F0A', '0x0000', 'ac_resource') < 1){
+			Orion.Print('Not Enough Poison...')	
+			Orion.Terminate('all')		
+		}
+		Orion.Print('Grabbing poisons...')
+		DP = Orion.FindType('0x0F0A', '0x0000','ac_resource')
+		Orion.MoveItem(DP, 1, backpack)
+		Orion.Wait(1250)
+		Orion.Exec('DPStar');
+}
+
+function DPStar(){
+	Orion.UseSkill('Poisoning');
+	if (Orion.WaitForTarget(1000))
+Orion.TargetType('0x0F0A', '0x0000');
+	Orion.Wait(100);
+	if (Orion.WaitForTarget(1000))
+Orion.TargetType('0x27AC', '0xFFFF');
+	Orion.Wait(15050);
+	Orion.Exec('DropStar');
+  }
+  
+function DropStar(){
+	Orion.Print('Dropping star...')
+	star = Orion.FindType('0x27AC', '0x0000',backpack);
+	Orion.MoveItem(star, 1, 'ac_finished');
+	Orion.Exec('DropBottleStar');
+	Orion.Wait(1000);
+    }
+  
+function DropBottleStar(){
+ 	Orion.Wait(1500);
+	Orion.Print('Dropping bottle...')
+	empty = Orion.FindType('0x0F0E', '0x0000',backpack);
+	Orion.MoveItem(empty, 1, 'ac_finished');
+	Orion.Wait(1500);
+	Orion.Exec('GetShuriken');
+}		

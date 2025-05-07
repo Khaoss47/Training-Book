@@ -1,0 +1,130 @@
+
+//                                       ▒
+//                                      ░█
+//                                    ███
+//                                  ██ღ█
+//                                ██ღ▒█             ▒█
+//                             ██ღ░▒█               ██
+//                             █ღ░░ღ█              █ღ▒█
+//                           █▒ღ░▒ღ░█       ██░ღღ█
+//                         ░█ღ▒░░▒ღ░████ღღღ█
+//       ░                █▒ღ▒░░░▒ღღღ░ღღღ██           ░█
+//       ▓█           ░█ღ▒░░░░░░░▒░ღღ██           ▓█░
+//       ██           █▒ღ░░░░░░░░░░ღ█         ▓▓██
+//       ██         ██ღ▒░░░░░░░░░ღ██  ░██ღ▒█
+//     ██ღ█    ██ღ░▒░░░░░░░░░░ღ▓██▒ღღ█
+//    █ღღ▓██▓ღ░░░▒░░░░░░░░▒░ღღღ░░▓█
+//  ██ღ▒▒ღღ░░ღღღღ░░▒░░░░ ღღღღ░░ღღღ██
+//  █ღ▒ღღ█████████ღღ▒░ღ██████████ღ▒█░
+//██ღღ▒████████████ღღ████████████░ღ█▒
+//█░ღღ████████████████████████████ღღ█
+//█▒ღ███████████<3 Khaoss ████████████ღ█
+//██ღღ████████████Const Var~█████████ღ██
+//  ██ღღ██████████████████████████ღ██
+//    ░██ღღ██████████████████████ღღ██
+//         ▓██ღ▒██████████████████▒ღ██
+//       ░    ░███ღ▒████████████▒ღ███
+//                    ▒██ღღ████████▒ღ██
+//                       ▒██ღ██████ღ██
+//                             ██ღ████ღ█
+//                                  █ღ██ღ█
+//                                    █ღღ█
+//                                    █ღ█░
+//                                     ██░
+//#include C:/OA/Khaoss/khaossTamerFunctions.oajs
+//#include C:/OA/Khaoss/khaossTamer.oajs
+//#include C:/OA/Khaoss/khaossTamerIncludes.oajs
+// Skill Value
+var taming = Orion.SkillValue('Animal Taming');
+var cap = Orion.SkillValue('Animal Taming'); 
+var magery = Orion.SkillValue('Magery');
+//var skillTime = Orion.Wait(7500);
+// Last Processed Location
+var lastProcessedLocation = " ";
+// Skill Thresholds
+
+var magicThresholds = {
+	fireball:700,
+	lightning:'cap'
+	
+};
+
+var aggroMobs = {
+    ice: [0x0037],
+    //farm: [,]
+    //hind: [,]
+    bear: [0x0003,0x0032,0x001A],
+    snow: [0x0037]
+    //bull: [,]
+    
+};	
+
+var skillThresholds = {
+    haven: 300,
+    farm: 514,
+    hind: 563,
+    ice: 700,
+    bear: 757,
+    snow: 881,
+    bull: 900,
+    home: 'cap'
+    
+};
+
+// Atlas Conversion Index Map
+var atlasConversionIndexMap = {
+    Location1: 50000,
+    Location2: 50008,
+    Location3: 50001,
+    Location4: 50009,
+    Location5: 50002,
+    Location6: 50010,
+    Location7: 50003,
+    Location8: 50011,
+    Location9: 50004,
+    Location10: 50012,
+    Location11: 50005,
+    Location12: 50013,
+    Location13: 50006,
+    Location14: 50014,
+    Location15: 50007,
+    Location16: 50015
+};
+
+
+var tameFunctionMap = {
+    Farm: farmTame,
+    Hind: hindTame,
+    Ice: iceTame,
+    Bear: bearTame,
+    Snow: snowTame,
+    Bull: bullTame,
+    Home: masteryTame
+};
+// Tameables
+var tameables = {
+    ice: '0x20E1|0x20FF|0x20CF|0x2118|0x00D5|0x00DD', // polar, walrus, bear, black bear, snow leopard, white wolf
+    snow: '0x0040|0x0041|0x0022|0x0025', // snow leopard, white wolf
+    farm: '0x00D8|0x00CF|0x00E7|0x00D1|0x00ED', // Cow, Sheep, Goat
+    hind: '0x0117|0x00ED|0x2124|0x0580', // Horse, Hind
+    bear: '0x20CF|0x20DB|0x2118|0x00A7|0x25A3', // Brown Bear, Black Bear, etc.
+    bull: '0x00E9|0x00E8|0x20DB|0x211E' // Bull, Grizzly, Snow Leopard
+};
+
+// Char bounces around the area inside coords
+var roamingPoints = {
+    farm: [{x: 5178, y: 3889}, {x: 5200, y: 3860}, {x: 5150, y: 3910}],
+    hind: [{x: 2120, y: 2834}, {x: 2070, y: 2650}, {x: 2120, y: 2834}],
+    ice:  [{x: 4054, y: 548}, {x: 3921, y: 183}, {x: 4031, y: 278}],
+    bear: [{x: 4558, y: 1465}, {x: 4526, y: 1454}, {x: 4572, y: 1366}],
+    snow: [{x: 3928, y: 366}, {x: 3945, y: 345}, {x: 3900, y: 390}],
+    bull: [{x: 5216, y: 3920}, {x: 5154, y: 3933}, {x: 5204, y: 3869}]
+};
+
+var petNames = ['Snargle', 'Fuzzbite', 'Wormfang', 'Pebble', 'Zigzag', 'Toothy', 'Grumble', 'Fizz', 'Clawdia', 'Chomp'];
+var newName = petNames[Math.floor(Math.random() * petNames.length)];
+var skillName = 'Animal Taming';
+var waitBetweenChecks = 250;
+var waitAfterMove = 1000;
+var targetWaitTimeout = 5000;
+    

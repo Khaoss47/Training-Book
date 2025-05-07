@@ -1,0 +1,337 @@
+//                                       ▒
+//                                      ░█
+//                                    ███
+//                                  ██ღ█
+//                                ██ღ▒█             ▒█
+//                             ██ღ░▒█               ██
+//                             █ღ░░ღ█              █ღ▒█
+//                           █▒ღ░▒ღ░█       ██░ღღ█
+//                         ░█ღ▒░░▒ღ░████ღღღ█
+//       ░                █▒ღ▒░░░▒ღღღ░ღღღ██           ░█
+//       ▓█           ░█ღ▒░░░░░░░▒░ღღ██           ▓█░
+//       ██           █▒ღ░░░░░░░░░░ღ█         ▓▓██
+//       ██         ██ღ▒░░░░░░░░░ღ██  ░██ღ▒█
+//     ██ღ█    ██ღ░▒░░░░░░░░░░ღ▓██▒ღღ█
+//    █ღღ▓██▓ღ░░░▒░░░░░░░░▒░ღღღ░░▓█
+//  ██ღ▒▒ღღ░░ღღღღ░░▒░░░░ ღღღღ░░ღღღ██
+//  █ღ▒ღღ█████████ღღ▒░ღ██████████ღ▒█░
+//██ღღ▒████████████ღღ████████████░ღ█▒
+//█░ღღ████████████████████████████ღღ█
+//█▒ღ███████████<3 Khaoss ████████████ღ█
+//██ღღ███████████Functions~██████████ღ██
+//  ██ღღ██████████████████████████ღ██
+//    ░██ღღ██████████████████████ღღ██
+//         ▓██ღ▒██████████████████▒ღ██
+//       ░    ░███ღ▒████████████▒ღ███
+//                    ▒██ღღ████████▒ღ██
+//                       ▒██ღ██████ღ██
+//                             ██ღ████ღ█
+//                                  █ღ██ღ█
+//                                    █ღღ█
+//                                    █ღ█░
+//                                     ██░
+
+//#include C:/OA/Khaoss/khaossTamerFunctions.oajs
+//#include C:/OA/Khaoss/khaossTamer.oajs
+//#include C:/OA/Khaoss/khaossTamerIncludes.oajs
+
+function farmTame() { tameIt('farm'); }
+function hindTame() { tameIt('hind'); }
+function iceTame()  { tameIt('ice'); }
+function bearTame() { tameIt('bear'); }
+function snowTame() { tameIt('snow'); }
+function bullTame() { tameIt('bull'); }
+
+function getRandomPetName() {
+    var petNames = ['Snargle', 'Fuzzbite', 'Wormfang','Snaggle', 'Pebbles', 'Zigzag', 'Toothy', 'Grumble', 'Fizz', 'Clawdia','RumbleHorn', 'Chomps'];
+    return petNames[Math.floor(Math.random() * petNames.length)];
+}
+
+function ensureWarMode() {
+    if (!Orion.WarMode()) {
+        Orion.WarMode(true);
+        Orion.Wait(200);
+    }
+}
+
+function tameIt(type) {
+
+    while (!Player.Dead()) {
+
+        // Aggro mob response (spell cast)
+        var foundAggro = false;
+        var types = aggroMobs[type] || [];
+        for (var i = 0; i < types.length; i++) {
+            var aggroMob = Orion.FindType(types[i], '-1', ground, 'near|mobile|live|nothuman', '12', 'gray|criminal');
+            if (aggroMob.length) {
+                attackPet(aggroMob[0]);
+                foundAggro = true;
+                Orion.Wait(100);
+                break;
+            }
+        }
+
+        var mob = Orion.FindType(tameables[type], '-1', ground, 'near|mobile|live', '24', 'gray');
+
+        Orion.Wait(100);
+
+        if (mob.length) {
+
+            Orion.Follow(mob);
+            Orion.Wait(500);
+
+            Orion.UseSkill('Animal Taming');
+            Orion.Wait(500);
+
+            Orion.TargetObject(mob);
+            Orion.Wait(500);
+
+            if (Orion.InJournal('Target on object blocked by distance') || Orion.InJournal("It's too far away")) {
+                Orion.Print('Tame failed due to targeting issue. Retrying...');
+                Orion.ClearJournal();
+                continue;
+            }
+
+            Orion.Wait(8500);
+
+            if (Orion.InJournal("You fail to tame the creature") || Orion.InJournal("You do not have a clear path")) {
+                Orion.CharPrint(self,'2128',"Sucka Fish...");
+                Orion.ClearJournal();
+                continue;
+            }
+
+            if (Orion.InJournal("The animal is too angry to continue taming!")) {
+                Orion.CharPrint(self,'2128',"Pfft. I didnt wanna be friends anyway.");
+                Orion.ClearJournal();
+                Orion.Wait(100);
+                attackPet(mob);
+                break;
+            }
+
+            Orion.ClearJournal();
+            Orion.Wait(6000); // wait for tame attempt
+
+            var newName = getRandomPetName();
+
+            Orion.RequestContextMenu(mob);
+            Orion.WaitContextMenuID(mob, 919); // name
+
+            var timeout = 2000;
+            var start = Orion.Now();
+
+            while (!Orion.PromptExists() && Orion.Now() - start < timeout) {
+                Orion.Wait(100);
+            }
+
+            if (Orion.PromptExists()) {
+                Orion.SendPrompt(newName);
+                Orion.Wait(500);
+            }
+
+            Orion.RequestContextMenu(mob);
+            Orion.WaitContextMenuID(mob, 138); // release
+
+            if (Orion.WaitForGump(1000)) {
+                var gump0 = Orion.GetGump('last');
+                if (gump0 && !gump0.Replayed() && gump0.ID() === '0x00000259') {
+                    gump0.Select(Orion.CreateGumpHook(2));
+                    Orion.Wait(500);
+                }
+            }
+
+            attackPet(mob);
+            break;
+
+        } else {
+            randoMe(roamingPoints[type][0], roamingPoints[type][1], roamingPoints[type][2]);
+        }
+
+    }
+
+}
+
+function attackPet(mob) {
+
+    Orion.WarMode(true);
+    Orion.Attack(mob);
+    Orion.Wait(500); 
+
+   
+    var magery = Orion.SkillValue('Magery');
+
+    while (Orion.ObjectExists(mob) && Orion.FindObject(mob).Hits() > 0) {
+        if (magery < magicThresholds.fireball) {
+            
+            Orion.Cast('Fireball');
+        } else if (magicThresholds.lightning === 'cap' || magery >= magicThresholds.lightning) {
+           
+            Orion.Cast('Lightning');
+        }
+
+        var waitStart = Orion.Now();
+        while (!Orion.WaitForTarget() && Orion.Now() - waitStart < 2000) {
+            Orion.Wait(150);
+        }
+
+        if (Orion.HaveTarget()) {
+            Orion.TargetObject(mob);
+            
+        }
+
+        if (Orion.InJournal('The spell fizzles')) {
+          Orion.CharPrint(self,'2128','Rude');
+          Orion.ClearJournal()
+         continue; 
+        }
+        Orion.Wait(1050);
+    }
+}
+ 
+function masteryTame() {
+    Orion.Wait(500);
+
+    while (!Player.Dead()) {
+        var tamingSkill = Orion.SkillValue('Animal Taming');
+
+        if (tamingSkill >= 900 && tamingSkill <= 1200) {
+            Orion.WalkTo(4007, 258);
+            Orion.Wait(500);
+
+            Orion.UseObject('self');
+            Orion.Wait(1100);
+
+            var pets = Orion.FindTypeEx('any', 'any', 'ground', 'nothuman');
+            var pet = null;
+
+            for (var i = 0; i < pets.length; i++) {
+                var currentPet = pets[i];
+                if (Orion.Contains(currentPet.Properties(), "\n" + "(bonded)")) {
+                    pet = currentPet;
+                    break;
+                }
+            }
+
+            if (pet) {
+                Orion.Follow(pet);
+                Orion.Wait(1000);
+                Orion.Cast('Combat Training');
+                if (Orion.WaitForTarget(2000)) {
+                    Orion.TargetObject(pet.Serial());
+                }
+                Orion.Wait(1000);
+            }
+        }
+
+        if (Player.Mana() <= 30) {
+            if (Orion.SkillValue('Meditation') > 40) {
+                while (!Orion.BuffExists('meditation')) {
+                    Orion.UseSkill('meditation');
+                    Orion.Wait(skillTime);
+                }
+            }
+
+            while (Player.Mana() < Player.MaxMana()) {
+                Orion.Wait(100);
+            }
+        }
+
+        Orion.Wait(250);
+    	}
+	}
+
+function TamingAdventure(location) {
+
+    var Timer = Orion.Now();
+
+    while (true) {
+
+        Orion.CloseGump('generic', 'any', '0x000F3ECC');
+        Orion.Wait(500);
+
+        if (!Orion.GumpExists('generic', 'any', '0x000F3ECC')) {
+
+            var atlas = Orion.FindTypeEx('0x9C16', 'any', backpack);
+            var TamingAtlas;
+
+            for (var i = 0; i < atlas.length; i++) {
+                var atlasProperties = atlas[i].Properties();
+                if (Orion.Contains(atlasProperties, 'Taming')) {
+                    TamingAtlas = atlas[i].Serial();
+                    break;
+                }
+            }
+
+            if (!TamingAtlas) {
+                Orion.Print("Taming atlas not found.");
+                return;
+            }
+
+            Orion.ClearJournal(); // Clear before casting
+            Orion.UseObject(TamingAtlas);
+            Orion.Wait(1500);
+
+            var atlasGump = Orion.GetGump('last');
+            var atlasGumpTextList = atlasGump.TextList();
+            var correctLocationIndex = null;
+
+            for (var j = 0; j < atlasGumpTextList.length; j++) {
+                if (Orion.Contains(atlasGumpTextList[j], location)) {
+                    correctLocationIndex = j;
+                    break;
+                }
+            }
+
+            if (correctLocationIndex === null) {
+                Orion.Print("Location not found in atlas: " + location);
+                return;
+            }
+
+            var atlasConversionIndex;
+
+            switch (correctLocationIndex) {
+                case 1: atlasConversionIndex = 50000; break;
+                case 2: atlasConversionIndex = 50008; break;
+                case 3: atlasConversionIndex = 50001; break;
+                case 4: atlasConversionIndex = 50009; break;
+                case 5: atlasConversionIndex = 50002; break;
+                case 6: atlasConversionIndex = 50010; break;
+                case 7: atlasConversionIndex = 50003; break;
+                case 8: atlasConversionIndex = 50011; break;
+                case 9: atlasConversionIndex = 50004; break;
+                case 10: atlasConversionIndex = 50012; break;
+                case 11: atlasConversionIndex = 50005; break;
+                case 12: atlasConversionIndex = 50013; break;
+                case 13: atlasConversionIndex = 50006; break;
+                case 14: atlasConversionIndex = 50014; break;
+                case 15: atlasConversionIndex = 50007; break;
+                case 16: atlasConversionIndex = 50015; break;
+                default: return;
+            }
+
+            if (Orion.WaitForGump(500)) {
+                var gump0 = Orion.GetGump('last');
+                if (gump0 && !gump0.Replayed() && gump0.ID() === '0x000001F2') {
+                    gump0.Select(Orion.CreateGumpHook(atlasConversionIndex));
+                    Orion.Wait(500);
+
+                    if (Orion.WaitForGump(500)) {
+                        var gump1 = Orion.GetGump('last');
+                        if (gump1 && !gump1.Replayed() && gump1.ID() === '0x000001F2') {
+                            gump1.Select(Orion.CreateGumpHook(4000));  // 2000 Sacred Journey 3000 Charge 4000 Recall
+                            Orion.Wait(2000);
+
+                            
+                            if (Orion.InJournal('The spell fizzles')) {
+                                Orion.Print('Recall fizzled. Retrying...');
+                                Orion.ClearJournal();
+                                continue;
+                            }
+                        }
+                    }
+                }
+            }
+
+            break;
+        }
+    }
+}

@@ -1,0 +1,496 @@
+
+
+//#include C:/OA/Khaoss/khaossTamerFunctions.oajs
+//#include C:/OA/Khaoss/khaossTamerIncludes.oajs
+//#include C:/OA/Khaoss/scriptBookVar.oajs
+//#include C:/OA/Khaoss/khaossTamer.oajs
+//#include C:/OA/Khaoss/scriptBookFunctions.oajs
+function autoStart(){
+	Orion.Exec(ScriptBook);
+}
+
+function ScriptBook() {
+    var gump = Orion.CreateCustomGump(12345);
+    gump.SetNoClose(false);
+    gump.Clear();
+    gump.SetCallback('GumpControls'); // Set the callback function
+
+    // Add background and transparency
+    gump.AddGumpPic(0, 0, 500, 1000); // Color of page in book (blue)
+    gump.AddCheckerTrans(5, 5, 410, 237, 0); // Add transparency to the menu
+
+    // Page 1 (Left Side)
+    gump.AddText(60, 6, '0x0030', 'Script Book Vol. I');
+    gump.AddTooltip(' Script Book Vol. I\n A collection of helpful scripts. ');
+    gump.AddLine(48, 27, 182, 27, 'black', 1);
+
+    // Button 1: Set Resource
+    var SetResourceColor = Orion.ScriptRunning('SetResource') ? '0x0030' : '0x0040';
+    gump.AddText(65, 38, SetResourceColor, 'Set Resource');
+    gump.AddTooltip('Sets resource and completed containers');
+
+    // Button 2: Antikick
+    var AntikickColor = Orion.ScriptRunning('Antikick') ? '0x0030' : '0x0040';
+    gump.AddText(65, 62, AntikickColor, 'Anti-kick');
+    gump.AddTooltip(' Opens your backpack every 5 mins\n to prevent you from timing out. ');
+
+    // Button 3: Stay Hidden
+    var StayHiddenColor = Orion.ScriptRunning('StayHidden') ? '0x0030' : '0x0040';
+    gump.AddText(65, 86, StayHiddenColor, 'Stay Hidden');
+    gump.AddTooltip(' Keeps you hidden using the hiding skill. ');
+
+    // Button 4: Poison Darts
+    var PoisonDartsColor = Orion.ScriptRunning('PoisonDarts') ? '0x0030' : '0x0040';
+    gump.AddText(65, 110, PoisonDartsColor, 'Poison Darts');
+    gump.AddTooltip(' Poisons darts. ');
+
+    // Button 5: Poison Stars
+    var PoisonStarsColor = Orion.ScriptRunning('PoisonStars') ? '0x0030' : '0x0040';
+    gump.AddText(65, 134, PoisonStarsColor, 'Poison Stars');
+    gump.AddTooltip('Poisons stars');
+
+    // Button 6: Placeholder6
+    var Placeholder6Color = Orion.ScriptRunning('autoFullTamer') ? '0x0030' : '0x0040';
+    gump.AddText(65, 158, Placeholder6Color, 'Tamer Autobot');
+    gump.AddTooltip('Taming 1-120');
+
+    // Button 7: Placeholder7
+    var Placeholder7Color = Orion.ScriptRunning(' ') ? '0x0030' : '0x0040';
+    gump.AddText(65, 182, Placeholder7Color, 'Script Name Here');
+    gump.AddTooltip(' Insert tool tip here. ');
+
+    // Left-side buttons (Page 1)
+    gump.AddButton(1, 40, 41, 0x4B9, 0x838, 0x4B9, '0x0000', 1);
+    gump.AddButton(2, 40, 65, 0x4B9, 0x838, 0x4B9, '0x0000', 1);
+    gump.AddButton(3, 40, 89, 0x4B9, 0x838, 0x4B9, '0x0000', 1);
+    gump.AddButton(4, 40, 113, 0x4B9, 0x838, 0x4B9, '0x0000', 1);
+    gump.AddButton(5, 40, 137, 0x4B9, 0x838, 0x4B9, '0x0000', 1);
+    gump.AddButton(6, 40, 161, 0x4B9, 0x838, 0x4B9, '0x0000', 1);
+    gump.AddButton(7, 40, 185, 0x4B9, 0x838, 0x4B9, '0x0000', 1);
+
+    // Page 2 (Right Side)
+    gump.AddText(254, 6, '0x0030', 'Customizable Gump');
+    gump.AddLine(238, 27, 380, 27, 'black', 1);
+
+    // Button 8: Placeholder8
+    var Placeholder8Color = Orion.ScriptRunning(' ') ? '0x0030' : '0x0040';
+    gump.AddText(255, 38, Placeholder8Color, 'Script Name Here');
+    gump.AddTooltip(' Insert tool tip here. ');
+
+    // Button 9: Placeholder9
+    var Placeholder9Color = Orion.ScriptRunning(' ') ? '0x0030' : '0x0040';
+    gump.AddText(255, 62, Placeholder9Color, 'Script Name Here');
+    gump.AddTooltip(' Insert tool tip here. ');
+
+    // Button 10: Placeholder10
+    var Placeholder10Color = Orion.ScriptRunning(' ') ? '0x0030' : '0x0040';
+    gump.AddText(255, 86, Placeholder10Color, 'Script Name Here');
+    gump.AddTooltip(' Insert tool tip here. ');
+
+    // Button 11: Placeholder11
+    var Placeholder11Color = Orion.ScriptRunning(' ') ? '0x0030' : '0x0040';
+    gump.AddText(255, 110, Placeholder11Color, 'Script Name Here');
+    gump.AddTooltip(' Insert tool tip here. ');
+
+    // Button 12: Placeholder12
+    var Placeholder12Color = Orion.ScriptRunning(' ') ? '0x0030' : '0x0040';
+    gump.AddText(255, 134, Placeholder12Color, 'Script Name Here');
+    gump.AddTooltip(' Insert tool tip here. ');
+
+    // Button 13: Placeholder13
+    var Placeholder13Color = Orion.ScriptRunning(' ') ? '0x0030' : '0x0040';
+    gump.AddText(255, 158, Placeholder13Color, 'Script Name Here');
+    gump.AddTooltip(' Insert tool tip here. ');
+
+    // Button 14: Placeholder14
+    var Placeholder14Color = Orion.ScriptRunning(' ') ? '0x0030' : '0x0040';
+    gump.AddText(255, 182, Placeholder14Color, 'Script Name Here');
+    gump.AddTooltip(' Insert tool tip here. ');
+
+    // Right-side buttons (Page 2)
+    gump.AddButton(8, 230, 41, 0x4B9, 0x838, 0x4B9, '0x0000', 2);
+    gump.AddButton(9, 230, 65, 0x4B9, 0x838, 0x4B9, '0x0000', 2);
+    gump.AddButton(10, 230, 89, 0x4B9, 0x838, 0x4B9, '0x0000', 2);
+    gump.AddButton(11, 230, 113, 0x4B9, 0x838, 0x4B9, '0x0000', 2);
+    gump.AddButton(12, 230, 137, 0x4B9, 0x838, 0x4B9, '0x0000', 2);
+    gump.AddButton(13, 230, 161, 0x4B9, 0x838, 0x4B9, '0x0000', 2);
+    gump.AddButton(14, 230, 185, 0x4B9, 0x838, 0x4B9, '0x0000', 2);
+
+    // Update Gump
+    gump.Select('gump');
+    gump.Update();
+}
+
+// Callback for Gump Controls
+function GumpControls() {
+    var code = CustomGumpResponse.ReturnCode();
+
+    // Handle close action (Button 0)
+    if (code === 0) {
+        Orion.Print(33, 'Book closed !!!');
+        return;
+    }
+
+    // Handle clicks for all buttons
+    if (code === 1) {
+        if (Orion.ScriptRunning('SetResource')) {
+            Orion.Print(33, 'Set Resource stopped.');
+            Orion.Terminate('SetResource');
+        } else {
+            Orion.Print(33, 'Set Resource started.');
+            Orion.ToggleScript('SetResource');
+        }
+        Orion.Wait(100); // Small delay to ensure script state updates
+        ScriptBook(); // Refresh gump
+    } else if (code === 2) {
+        if (Orion.ScriptRunning('PoisonStars')) {
+            Orion.Print(33, 'PoisonStars stopped.');
+            Orion.Terminate('PoisonStars');
+        } else {
+            Orion.Print(33, 'PoisonStars started.');
+            Orion.ToggleScript('PoisonStars');
+        }
+        Orion.Wait(100);
+        ScriptBook(); // Refresh gump
+    } else if (code === 3) {
+        if (Orion.ScriptRunning('StayHidden')) {
+            Orion.Print(33, 'Stay Hidden stopped.');
+            Orion.Terminate('StayHidden');
+        } else {
+            Orion.Print(33, 'Stay Hidden started.');
+            Orion.ToggleScript('StayHidden');
+        }
+        Orion.Wait(100);
+        ScriptBook(); // Refresh gump
+    } else if (code === 4) {
+        if (Orion.ScriptRunning('PoisonDarts')) {
+            Orion.Print(33, 'PoisonDarts stopped.');
+            Orion.Terminate('PoisonDarts');
+        } else {
+            Orion.Print(33, 'PoisonDarts started.');
+            Orion.ToggleScript('PoisonDarts');
+        }
+        Orion.Wait(100);
+        ScriptBook(); // Refresh gump
+    } else if (code === 5) {
+        if (Orion.ScriptRunning('PoisonStars')) {
+            Orion.Print(33, 'PoisonStars stopped.');
+            Orion.Terminate('PoisonStars');
+        } else {
+            Orion.Print(33, 'PoisonStars started.');
+            Orion.ToggleScript('PoisonStars');
+        }
+        Orion.Wait(100);
+        ScriptBook(); // Refresh gump
+    } else if (code === 6) {
+        if (Orion.ScriptRunning('autoFullTamer')) {
+            Orion.Print(33, 'Tamer Autobot stopped.');
+            Orion.Terminate(' ');
+        } else {
+            Orion.Print(33, 'Tamer Autobot started.');
+            Orion.ToggleScript('autoFullTamer');
+        }
+        Orion.Wait(100);
+        ScriptBook(); // Refresh gump
+    } else if (code === 7) {
+        if (Orion.ScriptRunning(' ')) {
+            Orion.Print(33, 'Placeholder7 stopped.');
+            Orion.Terminate(' ');
+        } else {
+            Orion.Print(33, 'Placeholder7 started.');
+            Orion.ToggleScript(' ');
+        }
+        Orion.Wait(100);
+        ScriptBook(); // Refresh gump
+    } else if (code === 8) {
+        if (Orion.ScriptRunning(' ')) {
+            Orion.Print(33, 'Placeholder8 stopped.');
+            Orion.Terminate(' ');
+        } else {
+            Orion.Print(33, 'Placeholder8 started.');
+            Orion.ToggleScript(' ');
+        }
+        Orion.Wait(100);
+        ScriptBook(); // Refresh gump
+    } else if (code === 9) {
+        if (Orion.ScriptRunning(' ')) {
+            Orion.Print(33, 'Placeholder9 stopped.');
+            Orion.Terminate(' ');
+        } else {
+            Orion.Print(33, 'Placeholder9 started.');
+            Orion.ToggleScript(' ');
+        }
+        Orion.Wait(100);
+        ScriptBook(); // Refresh gump
+    } else if (code === 10) {
+        if (Orion.ScriptRunning(' ')) {
+            Orion.Print(33, 'Placeholder10 stopped.');
+            Orion.Terminate(' ');
+        } else {
+            Orion.Print(33, 'Placeholder10 started.');
+            Orion.ToggleScript(' ');
+        }
+        Orion.Wait(100);
+        ScriptBook(); // Refresh gump
+    } else if (code === 11) {
+        if (Orion.ScriptRunning(' ')) {
+            Orion.Print(33, 'Placeholder11 stopped.');
+            Orion.Terminate(' ');
+        } else {
+            Orion.Print(33, 'Placeholder11 started.');
+            Orion.ToggleScript(' ');
+        }
+        Orion.Wait(100);
+        ScriptBook(); // Refresh gump
+    } else if (code === 12) {
+        if (Orion.ScriptRunning(' ')) {
+            Orion.Print(33, 'Placeholder12 stopped.');
+            Orion.Terminate(' ');
+        } else {
+            Orion.Print(33, 'Placeholder12 started.');
+            Orion.ToggleScript(' ');
+        }
+        Orion.Wait(100);
+        ScriptBook(); // Refresh gump
+    } else if (code === 13) {
+        if (Orion.ScriptRunning(' ')) {
+            Orion.Print(33, 'Placeholder13 stopped.');
+            Orion.Terminate(' ');
+        } else {
+            Orion.Print(33, 'Placeholder13 started.');
+            Orion.ToggleScript(' ');
+        }
+        Orion.Wait(100);
+        ScriptBook(); // Refresh gump
+    } else if (code === 14) {
+        if (Orion.ScriptRunning(' ')) {
+            Orion.Print(33, 'Placeholder14 stopped.');
+            Orion.Terminate(' ');
+        } else {
+            Orion.Print(33, 'Placeholder14 started.');
+            Orion.ToggleScript(' ');
+        }
+        Orion.Wait(100);
+        ScriptBook(); // Refresh gump
+    }
+}
+
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+function SetResource(){
+	Orion.Print(55, 'Set Resource Container!')
+	Orion.WaitForAddObject('ac_resource',25000);
+	Orion.Exec('SetFinished');
+	Orion.Wait(100)
+}
+function SetFinished(){
+	Orion.Print(55, 'Set Finished Container!')
+	Orion.WaitForAddObject('ac_finished',25000);
+	Orion.Wait(100)
+}
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+function AntiGM() {
+    // Discord
+    var bot = "Your Webhook Here"; // Webhook url
+    var charName = Player.Name();
+    var paramText = "username=" + charName + "&content=@everyone " + charName + " has a GM tapping them on the shoulder. ";
+
+    while (true) {
+        var startTime = Orion.Now();
+        var msg = Orion.WaitJournal("GM | Seer |Counselor ", startTime, 0);
+        Orion.Wait(1);
+        Orion.HttpPost(bot, paramText);
+        Orion.Terminate('all');
+    }
+}
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+function StayHidden() {
+    var Timer = Orion.Now();
+    while (!Player.Dead()) {
+        if (!Orion.BuffExists('Invisibility') && !Orion.BuffExists('Hiding') && Timer <= Orion.Now()) {
+            Orion.UseSkill('Hiding');
+            Timer = Orion.Now() + 11000;
+            Orion.Wait(200);
+        }
+        if (!Orion.BuffExists('Hiding') && !Orion.BuffExists('Invisibility') && Timer > Orion.Now()) {
+            Orion.WaitForTarget(2500);
+            Orion.Wait(1000);
+        }
+        Orion.Wait(2000);
+    }
+}
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+function GetFukiyaDart(){
+	Orion.UseObject('ac_resource')//Set your container serial
+    Orion.Wait(1250)
+	if (Orion.Count('0x2806', '0x0000', backpack) < 1){
+		if (Orion.Count('0x2806', '0x0000', '0x45B52F71') < 1){
+			Orion.Print('Not Enough Darts...')	
+			Orion.Terminate('all')		
+		}
+		Orion.Print('Grabbing darts...')
+		dart = Orion.FindType('0x2806', '0x0000','0x45B52F71')
+		Orion.MoveItem(dart, 1, backpack)
+		Orion.Wait(2250)
+		Orion.Exec('GetDP');
+	}
+}
+
+function GetDP(){
+	Orion.Wait(1500);
+    Orion.UseObject('ac_resource')//Set your container serial)
+    Orion.Wait(1250)
+		if (Orion.Count('0x0F0A', '0x0000', '0x45B52F71') < 1){
+			Orion.Print('Not Enough Poison...')	
+			Orion.Terminate('all')		
+		}
+		Orion.Print('Grabbing poisons...')
+		DP = Orion.FindType('0x0F0A', '0x0000','0x45B52F71')
+		Orion.MoveItem(DP, 1, backpack)
+		Orion.Wait(1250)
+		Orion.Exec('DPDart');
+}
+
+function DPDart(){
+	Orion.UseSkill('Poisoning');
+	if (Orion.WaitForTarget(1000))
+Orion.TargetType('0x0F0A', '0x0000');
+	Orion.Wait(100);
+	if (Orion.WaitForTarget(1000))
+Orion.TargetType('0x2806', '0xFFFF');
+	Orion.Wait(15050);
+	Orion.Exec('DropDart');
+  }
+  
+function DropDart(){
+	Orion.Print('Dropping darts...')
+	dart = Orion.FindType('0x2806', '0x0000',backpack);
+	Orion.MoveItem(dart, 1, 'ac_finished');
+	Orion.Exec('DropBottleDart');
+	Orion.Wait(1000);
+    }
+  
+function DropBottleDart(){
+ 	Orion.Wait(1500);
+	Orion.Print('Dropping bottle...')
+	empty = Orion.FindType('0x0F0E', '0x0000',backpack);
+	Orion.MoveItem(empty, 1, 'ac_finished');
+	Orion.Wait(1500);
+	Orion.Exec('GetFukiyaDart');
+	}
+	
+
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------
+function PoisonStars(){
+	Orion.Exec('GetShuriken');
+	}
+
+function GetShuriken(){
+	Orion.UseObject('ac_resource')//Set your container serial
+    Orion.Wait(1250)
+	if (Orion.Count('0x27AC', '0x0000', backpack) < 1){
+		if (Orion.Count('0x27AC', '0x0000', 'ac_resource') < 1){
+			Orion.Print('Not Enough Stars...')	
+			Orion.Terminate('all')		
+		}
+		Orion.Print('Grabbing star...')
+		star = Orion.FindType('0x27AC', '0x0000','ac_resource')
+		Orion.MoveItem(star, 1, backpack)
+		Orion.Wait(2250)
+		Orion.Exec('GetDPStar');
+	}
+}
+
+function GetDPStar(){
+	Orion.Wait(1500);
+    Orion.UseObject('ac_resource')//Set your container serial)
+    Orion.Wait(1250)
+		if (Orion.Count('0x0F0A', '0x0000', 'ac_resource') < 1){
+			Orion.Print('Not Enough Poison...')	
+			Orion.Terminate('all')		
+		}
+		Orion.Print('Grabbing poisons...')
+		DP = Orion.FindType('0x0F0A', '0x0000','ac_resource')
+		Orion.MoveItem(DP, 1, backpack)
+		Orion.Wait(1250)
+		Orion.Exec('DPStar');
+}
+
+function DPStar(){
+	Orion.UseSkill('Poisoning');
+	if (Orion.WaitForTarget(1000))
+Orion.TargetType('0x0F0A', '0x0000');
+	Orion.Wait(100);
+	if (Orion.WaitForTarget(1000))
+Orion.TargetType('0x27AC', '0xFFFF');
+	Orion.Wait(15050);
+	Orion.Exec('DropStar');
+  }
+  
+function DropStar(){
+	Orion.Print('Dropping star...')
+	star = Orion.FindType('0x27AC', '0x0000',backpack);
+	Orion.MoveItem(star, 1, 'ac_finished');
+	Orion.Exec('DropBottleStar');
+	Orion.Wait(1000);
+    }
+  
+function DropBottleStar(){
+ 	Orion.Wait(1500);
+	Orion.Print('Dropping bottle...')
+	empty = Orion.FindType('0x0F0E', '0x0000',backpack);
+	Orion.MoveItem(empty, 1, 'ac_finished');
+	Orion.Wait(1500);
+	Orion.Exec('GetShuriken');
+}		
+//-------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+function Icon() {
+    var playerSerial = Player.Serial();
+    var X = Orion.RegRead(playerSerial + "/MiniIconX");
+    var Y = Orion.RegRead(playerSerial + "/MiniIconY");
+
+    if (X === undefined) X = 1550;
+    if (Y === undefined) Y = 500;
+
+    var gumpId = 123456;
+    var gump = Orion.CreateCustomGump(gumpId);
+    gump.Clear();
+    gump.SetCallback("IconResponse");
+    gump.SetX(X);
+    gump.SetY(Y);
+    gump.SetNoClose(true);
+
+    var icon = 0x068F;
+    gump.AddButton(0, 0, 0, icon, icon, icon, "0");
+    gump.AddTooltip("Open ScriptBook");
+
+    gump.Update();
+}
+
+function IconResponse(buttonId) {
+    Orion.CharPrint(self,1155, "Book darling, Come to me");
+
+    var playerSerial = Player.Serial();
+    var pos = Orion.GetGumpPosition(123456); // No layer argument
+
+    if (pos) {
+        Orion.RegWrite(playerSerial + "/MiniIconX", pos.X());
+        Orion.RegWrite(playerSerial + "/MiniIconY", pos.Y());
+    } else {
+        Orion.Print("Could not get gump position.");
+    }
+
+    var g = Orion.GetGump(123456);
+    if (g) g.Close();
+
+    Icon();       // Reopen mini icon
+    ScriptBook(); // Open full book
+}
+
+Icon(); // Launch at start
+
